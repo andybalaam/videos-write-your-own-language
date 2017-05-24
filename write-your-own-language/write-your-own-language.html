@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="structpres.css"/>
+    <script src="structpres.js"></script>
+    <title>Write your own programming language</title>
+</head>
+
+<body>
+
+<div class="slide title">
+
+<div class="cc">
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+<img alt="Creative Commons Licence" src="cc-by-sa-4.png" /></a>
+This work is licensed under a
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons<br />Attribution-ShareAlike 4.0 International License</a>
+</div>
+
+<h1 class="seriestitle">Write your own programming language</h1>
+
+<address>Andy Balaam<br/>
+<a href="http://openmarket.com">OpenMarket</a><br>
+<a href="http://www.artificialworlds.net/blog">artificialworlds.net/blog</a>
+</address>
+</div>
+
+
+<a name="contents"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>Workshop structure</h1>
+<ul>
+    <li>Sit near a laptop with Python 2 or 3</li>
+    <li>Endure 3 slides</li>
+    <li>Then we do test-driven development</li>
+    <li>Work together!</li>
+</ul>
+</div>
+</div>
+
+
+<a name="slide_1"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>What is a programming language?</h1>
+<div class="image"><img src="programming-language.svg"/></div>
+</div>
+</div>
+
+
+<a name="slide_2"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>What is a programming language?</h1>
+<div class="image"><img src="programming-language-noexe.svg"/></div>
+</div>
+</div>
+
+
+<a name="slide_3"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>What is a programming language?</h1>
+<div class="image"><img src="programming-language-parts.svg"/></div>
+</div>
+</div>
+
+
+<a name="slide_4"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>Our language</h1>
+<code>&gt; today
+2017-06-28 (Tuesday)</code>
+</div>
+</div>
+
+
+<a name="slide_5"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>Our language</h1>
+<code>&gt; today
+2017-06-28 (Tuesday)
+
+&gt; 2 weeks
+14 days</code>
+</div>
+</div>
+
+
+<a name="slide_6"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>Our language</h1>
+<code>&gt; today
+2017-06-28 (Tuesday)
+
+&gt; 2 weeks
+14 days
+
+&gt; tomorrow + 2 weeks
+2017-07-13 (Wednesday)
+</code>
+</div>
+</div>
+
+
+
+<a name="slide_7"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>Code structure</h1>
+<p>Create a Python file datecalc.py:</p>
+<code># -- imports --
+
+# -- functions --
+
+# -- tests --
+
+# -- main --</code>
+</div>
+</div>
+
+
+<a name="slide_8"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>Lex a single word</h1>
+<code># -- imports --
+from collections import namedtuple
+
+# -- functions --
+WordToken = namedtuple("WordToken", ["word"])
+
+# -- tests --
+assert lex("today") == [WordToken("today")]</code>
+<p>Make it pass!</p>
+</div>
+</div>
+
+
+<a name="slide_9"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>Parse a single word</h1>
+<code># -- functions --
+WordTree = namedtuple("WordTree", ["word"])
+
+# -- tests --
+assert parse(lex("today")) == WordTree(WordToken("today"))</code>
+<p>Make it pass!</p>
+</div>
+</div>
+
+
+<a name="slide_24"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>More info</h1>
+<table class="moreinfo">
+    <tr>
+        <th>OpenMarket is hiring!</th>
+        <td><a href="TODO">TODO</a></td>
+    </tr>
+    <tr>
+        <th>The code:</th>
+        <td><a href="https://github.com/andybalaam/datecalc">github.com/andybalaam/datecalc</a></td>
+    </tr>
+    <tr>
+        <th>More like this:<br/></th>
+        <td><a href="http://twitter.com/andybalaam">@andybalaam</a><br/>
+        <a href="http://www.artificialworlds.net/blog">artificialworlds.net/blog</a></td>
+    </tr>
+</table>
+</div>
+</div>
