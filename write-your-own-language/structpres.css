@@ -87,6 +87,11 @@ code i
     font-style: normal;
 }
 
+code.small
+{
+    font-size: 65%;
+}
+
 code.cmdline
 {
     color: #00ff00;
@@ -184,6 +189,12 @@ div.slide.title address a
     font-size: 60%;
 }
 
+div.slide.title address a.invisible
+{
+    font-size: 100%;
+    color: inherit;
+}
+
 div.slide.contents a
 {
     color: inherit;
@@ -214,7 +225,7 @@ table.moreinfo
     margin-top: 5%;
     margin-left: auto;
     margin-right: auto;
-    width: 80%;
+    width: 90%;
     padding: 1%;
 }
 
@@ -222,21 +233,23 @@ table.moreinfo th
 {
     font-weight: normal;
     text-align: right;
-    width: 30%;
+    width: 50%;
     padding: 1%;
-    padding-right: 5%;
-    vertical-align: bottom;
-    font-size: 90%;
+    padding-bottom: 3%;
+    padding-right: 3%;
+    vertical-align: middle;
+    font-size: 85%;
 }
 
 table.moreinfo td
 {
     font-weight: normal;
     text-align: left;
-    vertical-align: bottom;
-    width: 90%;
+    vertical-align: middle;
+    width: 70%;
     padding: 1%;
-    font-size: 90%;
+    padding-bottom: 3%;
+    font-size: 85%;
 }
 
 table.moreinfo td a
@@ -244,3 +257,12 @@ table.moreinfo td a
     text-decoration: none;
 }
 
+address
+{
+    width: 50%;
+    margin: auto;
+    padding-top: 5%;
+    font-size: 70%;
+    text-align: left;
+    font-style: normal;
+}
