@@ -595,7 +595,10 @@ today + 3 days
 <div class="slide">
 <div class="slide_body">
 <h1>Extension: main</h1>
-<code class="small"># -- functions --
+<code class="small"># -- imports --
+import sys
+
+# -- functions --
 def <i>pretty</i>(value):
     if value[0] == "DateValue":
         return value[1].strftime("%Y-%m-%d (%A)")
@@ -610,7 +613,7 @@ while True:
     sys.stdout.write(
         "%s\n" %
         <i>pretty</i>(evaluate(parse(lex(ln.strip()))))
-</code>
+    )</code>
 </div>
 </div>
 
