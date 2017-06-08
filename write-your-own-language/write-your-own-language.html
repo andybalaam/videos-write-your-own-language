@@ -128,14 +128,8 @@ This work is licensed under a
 <div class="slide">
 <div class="slide_body">
 <h1>Lex a single word</h1>
-<code># -- imports --
-from collections import namedtuple
-
-# -- functions --
-WordToken = namedtuple("WordToken", ["word"])
-
-# -- tests --
-assert <em>lex("today")</em> == [WordToken("today")]</code>
+<code># -- tests --
+assert <em>lex("today")</em> == [("WordToken", "today")]</code>
 <p>Make it pass!</p>
 </div>
 </div>
@@ -146,8 +140,9 @@ assert <em>lex("today")</em> == [WordToken("today")]</code>
 <div class="slide_body">
 <h1>Lex a single word</h1>
 <p>My version:</p>
-<code>def lex(chars):
-    <em>return [WordToken(chars)]</em></code>
+<code># -- functions --
+def lex(chars):
+    <em>return [("WordToken", chars)]</em></code>
 </div>
 </div>
 
@@ -156,14 +151,11 @@ assert <em>lex("today")</em> == [WordToken("today")]</code>
 <div class="slide">
 <div class="slide_body">
 <h1>Parse a single word</h1>
-<code># -- functions --
-WordTree = namedtuple("WordTree", ["word"])
+<code># -- tests --
+def p(x):
+    return parse(lex(x))
 
-# -- tests --
-assert (
-    <em>parse(lex("today"))</em> ==
-    WordTree(WordToken("today"))
-)</code>
+assert <em>p("today")</em> == ("WordTree", "today")</code>
 <p>Make it pass!</p>
 </div>
 </div>
@@ -174,8 +166,10 @@ assert (
 <div class="slide_body">
 <h1>Parse a single word</h1>
 <p>My version:</p>
-<code>def parse(tokens):
-    <em>return WordTree(tokens[0])</em></code>
+<code># -- functions --
+def parse(tokens):
+    tok = tokens[0]
+    <em>return ("WordTree", tok[1])</em></code>
 </div>
 </div>
 
@@ -187,14 +181,13 @@ assert (
 <code># -- imports --
 from datetime import date, timedelta
 
-# -- functions --
-DateValue = namedtuple("DateValue", ["value"])
-
 # -- tests --
-assert (
-    <em>evaluate(parse(lex("today")))</em> ==
-    DateValue(date.today())
-)</code>
+def e(x):
+    return evaluate(parse(lex(x)))
+
+today = date.today()
+
+assert <em>e("today")</em> == ("DateValue", today)</code>
 <p>Make it pass!</p>
 </div>
 </div>
@@ -205,8 +198,9 @@ assert (
 <div class="slide_body">
 <h1>Parse a single word</h1>
 <p>My version (for now):</p>
-<code>def evaluate(<i>tree</i>):
-    <em>return DateValue(date.today())</em></code>
+<code># -- functions --
+def evaluate(<i>tree</i>):
+    <em>return ("DateValue", date.today())</em></code>
 </div>
 </div>
 
@@ -218,11 +212,12 @@ assert (
 <code># -- tests --
 assert (
     <em>lex("tomorrow")</em> ==
-    [WordToken("tomorrow")]
+    [("WordToken", "tomorrow")]
 )
+
 assert (
-    <em>parse(lex("tomorrow"))</em> ==
-    WordTree(WordToken("tomorrow"))
+    <em>p("tomorrow")</em> ==
+    ("WordTree", "tomorrow")
 )</code>
 <p>These may already pass!</p>
 </div>
@@ -234,11 +229,12 @@ assert (
 <div class="slide_body">
 <h1>Another single word</h1>
 <code># -- tests --
+def days(n):
+    return timedelta(days=n)
+
 assert (
-    <em>evaluate(parse(lex("tomorrow")))</em> ==
-    DateValue(
-        <i>date.today() + timedelta(days=1)</i>
-    )
+    <em>e("tomorrow")</em> ==
+    ("DateValue", today + days(1))
 )</code>
 <p>Make it pass!</p>
 </div>
@@ -250,11 +246,13 @@ assert (
 <div class="slide_body">
 <h1>Another single word</h1>
 <p>My version:</p>
-<code>def evaluate(tree):
-    if tree.word.word == "<i>today</i>":
-        <em>return DateValue(date.today())</em>
-    elif tree.word.word == "<i>tomorrow</i>":
-        <em>return DateValue(
+<code># -- functions --
+def evaluate(tree):
+    if tree[1] == "<i>today</i>":
+        <em>return ("DateValue", date.today())</em>
+    elif tree[1] == "<i>tomorrow</i>":
+        <em>return (
+            "DateValue",
             date.today() + timedelta(days=1)
         )</em></code>
 </div>
@@ -265,20 +263,15 @@ assert (
 <div class="slide">
 <div class="slide_body">
 <h1>Two different tokens</h1>
-<code># -- functions --
-NumberToken = namedtuple(
-    "NumberToken", ["number"])
-
-# -- tests --
+<code># -- tests --
 assert (
     <em>lex("2 days")</em> ==
-    [NumberToken("2"), WordToken("days")]
-)
-assert (
-    <em>lex("13 days")</em> ==
-    [NumberToken("13"), WordToken("days")]
+    [
+        ("NumberToken", "2"),
+        ("WordToken", "days")
+    ]
 )</code>
-<p>Make them pass!</p>
+<p>Make it pass!</p>
 </div>
 </div>
 
@@ -288,12 +281,12 @@ assert (
 <div class="slide_body">
 <h1>Two different tokens</h1>
 <p>My version:</p>
-<code>def <em>make_token</em>(s):
-    if s[0] in "0123456789":
-        return NumberToken(s)
+<code># -- functions --
+def <em>make_token</em>(s):
+    <i>if s[0] in "0123456789":
+        return ("NumberToken", s)</i>
     else:
-        return WordToken(s)
-
+        return ("WordToken", s)
 
 def lex(chars):
     return [
@@ -308,17 +301,10 @@ def lex(chars):
 <div class="slide">
 <div class="slide_body">
 <h1>Parse time length</h1>
-<code># -- functions --
-LengthTree = namedtuple(
-    "LengthTree", ["length", "unit"])
-
-# -- tests --
+<code># -- tests --
 assert (
-    <em>parse(lex("2 days"))</em> ==
-    LengthTree(
-        NumberToken("2"),
-        WordToken("days")
-    )
+    <em>p("2 days")</em> ==
+    ("LengthTree", "2", "days")
 )</code>
 <p>Make it pass!</p>
 </div>
@@ -331,12 +317,16 @@ assert (
 <h1>Parse time length</h1>
 <p>My version:</p>
 <code>def parse(tokens):
-    if type(tokens[0]) == NumberToken:
-        <em>return LengthTree(
-            tokens[0], tokens[1]
+    tok = tokens[0]
+    if tok[0] == "NumberToken":
+        next_tok = tokens[1]
+        <em>return (
+            "LengthTree",
+            tok[1],
+            next_tok[1]
         )</em>
-    else:
-        return WordTree(tokens[0])</code>
+    else: # Must be WordToken
+        return ("WordTree", tok[1])</code>
 </div>
 </div>
 
@@ -345,16 +335,8 @@ assert (
 <div class="slide">
 <div class="slide_body">
 <h1>Eval time length</h1>
-<code># -- functions --
-LengthValue = namedtuple(
-    "LengthValue", ["days"])
-
-
-# -- tests --
-assert (
-    <em>evaluate(parse(lex("2 days")))</em> ==
-    LengthValue(2)
-)</code>
+<code># -- tests --
+assert <em>e("2 days")</em> == ("LengthValue", 2)</code>
 <p>Make it pass!</p>
 </div>
 </div>
@@ -366,17 +348,15 @@ assert (
 <h1>Eval time length</h1>
 <p>My version:</p>
 <code>def evaluate(tree):
-    if type(tree) == LengthTree:
-        <em>return LengthValue(
-            int(tree.length.number)
-        )</em>
-    else:
-        if tree.word.word == "today":
-            return DateValue(date.today())
-        elif tree.word.word == "tomorrow":
-            return DateValue(
-                date.today() +
-                timedelta(days=1)
+    if tree[0] == "LengthTree":
+        <em>return ("LengthValue", int(tree[1]))</em>
+    elif tree[0] == "WordTree":
+        if tree[1] == "today":
+            return ("DateValue", date.today())
+        elif tree[1] == "tomorrow":
+            return (
+                "DateValue",
+                date.today() + timedelta(days=1)
             )</code>
 </div>
 </div>
@@ -389,14 +369,14 @@ assert (
 <code># -- tests --
 assert (
     <em>lex("3 weeks")</em> ==
-    [NumberToken("3"), WordToken("weeks")]
+    [
+        ("NumberToken", "3"),
+        ("WordToken", "weeks")
+    ]
 )
 assert (
-    <em>parse(lex("3 weeks"))</em> ==
-    LengthTree(
-        NumberToken("3"),
-        WordToken("weeks")
-    )
+    <em>p("3 weeks")</em> ==
+    ("LengthTree", "3", "weeks")
 )</code>
 <p>These may already pass!</p>
 </div>
@@ -408,10 +388,7 @@ assert (
 <div class="slide_body">
 <h1>Weeks are 7 days</h1>
 <code># -- tests --
-assert (
-    <em>evaluate(parse(lex("3 weeks")))</em> ==
-    LengthValue(21)
-)</code>
+assert <em>e("3 weeks")</em> == ("LengthValue", 21)</code>
 <p>Make it pass!</p>
 </div>
 </div>
@@ -423,19 +400,21 @@ assert (
 <h1>Weeks are 7 days</h1>
 <p>My version:</p>
 <code>def <i>length_tree_in_days</i>(length_tree):
-    unit = length_tree.unit.word
-    number = int(length_tree.length.number)
-    if unit in ("weeks", "week"):
+    number = int(length_tree[1])
+    unit = length_tree[2]
+    if unit == "weeks":
         return number * 7
     else:
         return number
 
 def evaluate(tree):
-    if type(tree) == LengthTree:
-        <em>return LengthValue(
+    if tree[0] == "LengthTree":
+        <em>return (
+            "LengthValue",
             </em><i>length_tree_in_days</i><em>(tree)
         )</em>
-    <i>...</i></code>
+    <i>...</i>
+</code>
 </div>
 </div>
 
@@ -444,18 +423,13 @@ def evaluate(tree):
 <div class="slide">
 <div class="slide_body">
 <h1>Plus expression</h1>
-<code># -- functions --
-OperatorToken = namedtuple(
-    "OperatorToken", ["name", "tag"])
-
-# -- tests --
-assert (
+<code>assert (
     <em>lex("today + 3 days")</em> ==
     [
-        WordToken("today"),
-        <i>OperatorToken("+", "+")</i>,
-        NumberToken("3"),
-        WordToken("days")
+        ("WordToken", "today"),
+        <i>("OperatorToken", "+")</i>,
+        ("NumberToken", "3"),
+        ("WordToken", "days")
     ]
 )</code>
 <p>Make it pass!</p>
@@ -468,13 +442,13 @@ assert (
 <div class="slide_body">
 <h1>Plus expression</h1>
 <p>My version:</p>
-<code>def make_token(ch):
-    if ch[0] in "0123456789":
-        return NumberToken(ch)
-    elif ch[0] in "+":
-        <em>return OperatorToken(ch[0], ch[0])</em>
+<code>def make_token(s):
+    if s[0] in "0123456789":
+        return ("NumberToken", s)
+    elif s[0] in "+":
+        <em>return ("OperatorToken", s[0])</em>
     else:
-        return WordToken(ch)</code>
+        return ("WordToken", s)</code>
 </div>
 </div>
 
