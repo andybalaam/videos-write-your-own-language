@@ -154,18 +154,7 @@ div.slide.title h1
     margin-bottom: 0em;
     margin-left: 3%;
     margin-right: 4%;
-    font-size: 175%;
-}
-
-div.slide.title h1.seriestitle
-{
-    font-size: 80%;
-    margin-bottom: 0px;
-}
-
-div.slide.title h1.afterseriestitle
-{
-    margin-top: 0px;
+    font-size: 150%;
 }
 
 div.slide.title h2
@@ -233,12 +222,11 @@ table.moreinfo th
 {
     font-weight: normal;
     text-align: right;
-    width: 50%;
+    width: 40%;
     padding: 1%;
-    padding-bottom: 3%;
     padding-right: 3%;
     vertical-align: middle;
-    font-size: 85%;
+    font-size: 80%;
 }
 
 table.moreinfo td
@@ -248,8 +236,7 @@ table.moreinfo td
     vertical-align: middle;
     width: 70%;
     padding: 1%;
-    padding-bottom: 3%;
-    font-size: 85%;
+    font-size: 80%;
 }
 
 table.moreinfo td a
@@ -259,9 +246,9 @@ table.moreinfo td a
 
 address
 {
-    width: 50%;
+    width: 40%;
     margin: auto;
-    padding-top: 5%;
+    padding-top: 3%;
     font-size: 70%;
     text-align: left;
     font-style: normal;
