@@ -249,7 +249,7 @@ assert (
 <code># -- functions --
 def evaluate(tree):
     if tree[1] == "<i>today</i>":
-        <em>return ("DateValue", date.today())</em>
+        return ("DateValue", date.today())
     elif tree[1] == "<i>tomorrow</i>":
         <em>return (
             "DateValue",
@@ -318,7 +318,7 @@ assert (
 <p>My version:</p>
 <code>def parse(tokens):
     tok = tokens[0]
-    if tok[0] == "NumberToken":
+    if tok[0] == <i>"NumberToken"</i>:
         next_tok = tokens[1]
         <em>return (
             "LengthTree",
@@ -348,7 +348,7 @@ assert <em>e("2 days")</em> == ("LengthValue", 2)</code>
 <h1>Eval time length</h1>
 <p>My version:</p>
 <code>def evaluate(tree):
-    if tree[0] == "LengthTree":
+    if tree[0] == "<i>LengthTree</i>":
         <em>return ("LengthValue", int(tree[1]))</em>
     elif tree[0] == "WordTree":
         if tree[1] == "today":
@@ -398,7 +398,6 @@ assert <em>e("3 weeks")</em> == ("LengthValue", 21)</code>
 <div class="slide">
 <div class="slide_body">
 <h1>Weeks are 7 days</h1>
-<p>My version:</p>
 <code>def <i>length_tree_in_days</i>(length_tree):
     number = int(length_tree[1])
     unit = length_tree[2]
@@ -445,39 +444,23 @@ def evaluate(tree):
 <code>def make_token(s):
     if s[0] in "0123456789":
         return ("NumberToken", s)
-    elif s[0] in "+":
+    <i>elif s[0] in "+":</i>
         <em>return ("OperatorToken", s[0])</em>
     else:
         return ("WordToken", s)</code>
 </div>
 </div>
 
-
 <a name="slide_28"></a>
 <div class="slide">
 <div class="slide_body">
 <h1>Plus expression</h1>
-<code># -- functions --
-OperatorTree = namedtuple(
-    "OperatorTree",
-    ["operator", "left", "right"]
-)</code>
-</div></div>
-
-<a name="slide_29"></a>
-<div class="slide">
-<div class="slide_body">
-<h1>Plus expression</h1>
-<code># -- tests --
-assert (
-    <em>parse(lex("today + 3 days"))</em> ==
-    OperatorTree(
-        <i>OperatorToken("+", "+")</i>,
-        WordTree(WordToken("today")),
-        LengthTree(
-            NumberToken("3"),
-            WordToken("days")
-        )
+<code>assert (
+    <em>p("today + 3 days")</em> ==
+    ("<i>OperatorTree</i>",
+        "+",
+        ("WordTree", "today"),
+        ("LengthTree", "3", "days")
     )
 )</code>
 <p>Challenge: make it pass!</p>
@@ -485,7 +468,7 @@ assert (
 </div>
 
 
-<a name="slide_30"></a>
+<a name="slide_29"></a>
 <div class="slide">
 <div class="slide_body">
 <h1>Plus expression</h1>
@@ -498,6 +481,27 @@ assert (
 </div>
 
 
+<a name="slide_30"></a>
+<div class="slide">
+<div class="slide_body">
+<h1>Plus expression</h1>
+<p>My version:</p>
+<code>def <i>parse</i>(tokens, so_far=None):
+    <i>...</i>
+    tok = tokens[0]
+    other_toks = tokens[1:]
+    elif tok[0] == "OperatorToken":
+        return (
+            "<em>OperatorTree</em>",
+            tok[1],
+            so_far,
+            <i>parse</i>(other_toks)
+        )
+    <i>...</i></code>
+</div>
+</div>
+
+
 <a name="slide_31"></a>
 <div class="slide">
 <div class="slide_body">
@@ -505,13 +509,11 @@ assert (
 <p>My version:</p>
 <code>def <i>parse</i>(tokens, so_far=None):
     <i>...</i>
-    elif type(tokens[0]) == OperatorToken:
-        return <em>OperatorTree</em>(
-            tokens[0],
-            so_far,
-            <i>parse</i>(tokens[1:])
-        )
-    <i>...</i></code>
+    else:
+        return <i>parse</i>(
+            other_toks,
+            <em>("WordTree", tok[1])</em>
+        )</code>
 </div>
 </div>
 
@@ -520,14 +522,20 @@ assert (
 <div class="slide">
 <div class="slide_body">
 <h1>Plus expression</h1>
-<p>My version:</p>
-<code>def <i>parse</i>(tokens, so_far=None):
-    <i>...</i>
-    else:
+<code class="small">def <i>parse</i>(tokens, so_far=None):
+    if len(tokens) == 0:
+        return so_far
+    tok = tokens[0]
+    other_toks = tokens[1:]
+    if tok[0] == "NumberToken":
+        next_tok = tokens[1]
+        return ("LengthTree", tok[1], next_tok[1])
+    elif tok[0] == "OperatorToken":
+        return ("OperatorTree",
+            tok[1], so_far, <i>parse</i>(other_toks))
+    else: # Must be WordToken
         return <i>parse</i>(
-            tokens[1:],
-            <em>WordTree(tokens[0])</em>
-        )</code>
+            other_toks, ("WordTree", tok[1]))</code>
 </div>
 </div>
 
@@ -536,22 +544,15 @@ assert (
 <div class="slide">
 <div class="slide_body">
 <h1>Plus expression</h1>
-<code class="small">def <i>parse</i>(tokens, so_far=None):
-    if len(tokens) == 0:
-        return so_far
-    elif type(tokens[0]) == NumberToken:
-        return LengthTree(tokens[0], tokens[1])
-    elif type(tokens[0]) == OperatorToken:
-        return OperatorTree(
-            tokens[0],
-            so_far,
-            <i>parse</i>(tokens[1:])
-        )
-    else:
-        return <i>parse</i>(
-            tokens[1:],
-            WordTree(tokens[0])
-        )</code>
+<code>assert (
+    <em>e("today + 3 days")</em> ==
+    ("DateValue", today + days(3))
+)
+assert (
+    <em>e("tomorrow + 1 day")</em> ==
+    ("DateValue", today + days(2))
+)</code>
+<p>Make them pass!</p>
 </div>
 </div>
 
@@ -560,45 +561,23 @@ assert (
 <div class="slide">
 <div class="slide_body">
 <h1>Plus expression</h1>
-<code># -- tests --
-assert (
-    <em>evaluate(parse(lex("today + 3 days")))</em> ==
-    DateValue(
-        date.today() + timedelta(days=3)
-    )
-)
-assert (
-    <em>evaluate(parse(lex("tomorrow + 1 day")))</em> ==
-    DateValue(
-        date.today() + timedelta(days=2)
-    )
-)</code>
-<p>Make them pass!</p>
-</div>
-</div>
-
-
-<a name="slide_35"></a>
-<div class="slide">
-<div class="slide_body">
-<h1>Plus expression</h1>
-<p>My version:</p>
 <code>def <i>evaluate</i>(tree):
-    if type(tree) == LengthTree:
+    if tree[0] == "LengthTree":
         <i>...</i>
-    elif type(tree) == OperatorTree:
-        left = <i>evaluate</i>(tree.left).value
-        right = <i>evaluate</i>(tree.right).days
-        return <em>DateValue(
-            left + timedelta(days=right)
+    elif tree[0] == "OperatorTree":
+        left = <i>evaluate</i>(tree[2])
+        right = <i>evaluate</i>(tree[3])
+        return <em>(
+            "DateValue",
+            left[1] + timedelta(days=right[1])
         )</em>
-    elif type(tree) == WordTree:
+    elif tree[0] == "WordTree":
         <i>...</i></code>
 </div>
 </div>
 
 
-<a name="slide_36"></a>
+<a name="slide_35"></a>
 <div class="slide">
 <div class="slide_body">
 <h1>Extension: main</h1>
@@ -612,17 +591,16 @@ today + 3 days
 </div>
 
 
-<a name="slide_37"></a>
+<a name="slide_36"></a>
 <div class="slide">
 <div class="slide_body">
 <h1>Extension: main</h1>
 <code class="small"># -- functions --
 def <i>pretty</i>(value):
-    if type(value) == DateValue:
-        return value.value.strftime(
-            "%Y-%m-%d (%A)")
+    if value[0] == "DateValue":
+        return value[1].strftime("%Y-%m-%d (%A)")
     else:
-        return "%s days" % value.days
+        return "%s days" % value[1]
 
 # -- main --
 while True:
@@ -637,7 +615,7 @@ while True:
 </div>
 
 
-<a name="slide_38"></a>
+<a name="slide_37"></a>
 <div class="slide">
 <div class="slide_body">
 <h1>Homework: error-handling</h1>
@@ -650,7 +628,7 @@ while True:
 </div>
 
 
-<a name="slide_39"></a>
+<a name="slide_38"></a>
 <div class="slide">
 <div class="slide_body">
 <h1>Homework: minus</h1>
@@ -660,7 +638,7 @@ while True:
 </div>
 
 
-<a name="slide_40"></a>
+<a name="slide_39"></a>
 <div class="slide">
 <div class="slide_body">
 <h1>Homework: date input</h1>
@@ -670,7 +648,7 @@ while True:
 </div>
 
 
-<a name="slide_41"></a>
+<a name="slide_40"></a>
 <div class="slide">
 <div class="slide_body">
 <h1>Nice work.</h1>
