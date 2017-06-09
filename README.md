@@ -3,6 +3,10 @@
 Presentation slides for a workshop on how to write your own programming
 language.
 
+Versions of the code at each point are at:
+
+[artificialworlds.net/presentations/write-your-own-language/code](http://www.artificialworlds.net/presentations/write-your-own-language/code)
+
 ## Links
 
 * [These slides as a presentation](http://www.artificialworlds.net/presentations/write-your-own-language/write-your-own-language.html)
