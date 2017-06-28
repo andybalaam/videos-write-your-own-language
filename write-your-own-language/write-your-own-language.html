@@ -131,6 +131,7 @@ This work is licensed under a
 <code># -- tests --
 assert <em>lex("today")</em> == [("WordToken", "today")]</code>
 <p>Make it pass!</p>
+<div class="image"><img src="lexer.svg"/></div>
 </div>
 </div>
 
@@ -157,6 +158,7 @@ def p(x):
 
 assert <em>p("today")</em> == ("WordTree", "today")</code>
 <p>Make it pass!</p>
+<div class="image"><img src="parser.svg"/></div>
 </div>
 </div>
 
@@ -188,7 +190,7 @@ def e(x):
 today = date.today()
 
 assert <em>e("today")</em> == ("DateValue", today)</code>
-<p>Make it pass!</p>
+<div class="image"><img src="evaluator.svg" style="float:right;"/><p>Make it pass!</p></div>
 </div>
 </div>
 
